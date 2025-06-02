@@ -1,5 +1,37 @@
 ## Day 1
 
+## Red Hat Openshift System Requirements
+Our Training Lab Hardware configurations ( For a multi-node Openshift cluster setup - with 3 masters and 3 worker nodes )
+<pre>
+Intel Xeon Processor with 48 Cores
+755 GB RAM
+18 TB HDD/SDD(Storage)
+</pre>	
+
+#### Master Nodes (Control Plane)
+<pre>
+- This can be physical server or a Virtual machine
+- this can be server from your private datacenter or an AWS ec2 instance or an azure VMS
+- a minimum of 3 master nodes are required for HA
+</pre>	
+<pre>
+Processor - 8 vcpus
+RAM - 128 GB RAM
+HDD - 500 GB 
+</pre>
+Sizing considerations
+<pre>
+- For each 1000 pods about 1.5 GB RAM and 1 CPU core is required as a minimum
+- Practically, atleast 16GB RAM and 8 vcpus and about 100GB Storage, in case you plan not to deploy user applications
+</pre>	
+
+#### Worker Nodes (Compute Node)
+<pre>
+Processor - 8 vcpus
+RAM - 128 GB RAM
+HDD - 500 GB 
+</pre>
+ 
 ## Installing KVM on Ubuntu v24.04
 ```
 sudo apt update
