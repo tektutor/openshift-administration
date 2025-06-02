@@ -1,7 +1,5 @@
 ## Day 1
 
-# Install Red Hat Openshift in Oracle Linux v9.4
-
 ## Installing KVM on Ubuntu v24.04
 ```
 sudo apt update
