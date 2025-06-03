@@ -751,3 +751,40 @@ https://access.redhat.com/solutions/4307511
 - Once all the masters nodes are up and running, i.e serving the API/etcd traffic the cluster becomes self-hosted
 - the bootkube process shuts down the temporary control plane in the bootsrap vm and master nodes take over from here
 </pre>
+
+## Info - How does the RHEL based worker nodes join the OpenShift cluser?
+<pre>
+- Once the RHEL OS is installed on the worker node, we need to manually install   \
+	cri-o \
+  	openshift-clients \
+  	openshift-hyperkube \
+  	network-scripts \
+  	NetworkManager \
+  	nmstate \
+  	podman \
+  	kubelet
+- We need to generate and place the required certificates for the kubelet
+- We can achieve this using oc adm command on the master node to generate the kubelet boostrap kubeconfig
+- For example
+	oc adm create-node-config \
+	  --node-dir=/etc/kubernetes/node-node01 \
+	  --node=node01.example.com \
+	  --hostnames=node01,node01.example.com \
+	  --node-client-certificate-authority=/etc/kubernetes/ca.crt \
+	  --certificate-authority=/etc/kubernetes/ca.crt \
+	  --signer-cert=/etc/kubernetes/ca.crt \
+	  --signer-key=/etc/kubernetes/ca.key \
+	  --signer-serial=/etc/kubernetes/ca.serial.txt
+- The other option is to use the bootstrap kubeconfig downloaded from the OpenShift installer assets (auth/kubeconfig, auth/bootstrap.kubeconfig).
+- We need to place it at /etc/kubernetes/kubelet.conf on the worker node
+- Once the kubelet starts running the worker nodes starts showing up
+- The worker node kubelet contacts the control plane requesting for certificate and appear in NotReady state
+- Once the CSR is approved and when all the components in worker node are found to be stable (CRI-O is running, OVN-Kubernetes network, etc.,), the worker node is reported as Ready 
+- Optionally you could use MachineConfigs, if you are using Machine Config Operators(MCO)
+- Security considerations
+  - Not all MCO features work on RHEL. For example:
+     - Kernel upgrades and Ignition are RHCOS-only.
+     - Some machine configs might not apply unless explicitly tailored for RHEL.
+  - Kubelet and CRI-O should run with correct SELinux, firewall, and certificates
+  - RHEL must use compatible OpenShift RPMs provided via Red Hat repos
+</pre>
