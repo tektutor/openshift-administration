@@ -63,7 +63,7 @@ oc expose deploy/nginx --port=8080
   - Integrating with Existing Network Infrastructure
     - BGP is used to:
       - Inform your data center routers or leaf switches about pod IPs
-      - Ensure that any server in your network can reach any pod in the OpenShift cluster without NAT or overlays
+      - Ensures any server in your network can reach any pod in the OpenShift cluster without NAT or overlays
 </pre>
 
 #### Without BGP (Packet gets Encapsulated/De-encapsulated - Leads to Performance issues)
