@@ -76,6 +76,46 @@ Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --De
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
 
+## Lab - Deploying Ceph strorage into Openshift
+<pre>
+- Need to install Openshift Data Foundation Operator a.k.a (ODF Operator)
+- Ceph Operator Components
+  - rook-ceph-operator
+    - runs as a Deployment usually in the openshift-storage namespace
+    - responsible for managing the lifecycle of Ceph components (e.g., creating OSDs, MONs, MGRs, etc.)
+    - typically runs on a control plane or infra node
+- Ceph Cluster Components
+  - MON (Monitor Pods)
+    - Usually 3 instances for HA (can be 5 in large clusters)
+    - Store cluster state and help with consensus
+    - Scheduled on different nodes to ensure fault tolerance
+  - OSD (Object Storage Daemon) Pods
+    - One or more per storage node, depending on how many storage devices are available
+    - Responsible for data storage, replication, recovery.
+    - Deployed only on nodes with attached block devices 
+    - usually labeled with cluster.ocs.openshift.io/openshift-storage=''
+  - MGR (Manager) Pods
+    - Provide metrics and manage cluster state
+    - One active manager, possibly one standby
+    - Usually co-located with MONs or other components
+  - MDS (Metadata Server) Pods (Only if CephFS is used)
+    - Handle file system metadata.
+    - 2 or more pods for HA
+  - RGW (RADOS Gateway) Pods 
+    - Only if object storage is used via S3 interface
+    - Provide S3-compatible object storage interface
+    - Usually runs on any worker or storage nodes
+- Supporting Components
+  - CSI Drivers (CephFS and RBD)
+    - Enable dynamic provisioning of persistent volumes
+    - Deployed as DaemonSets across all relevant worker nodes
+  - rook-ceph-crashcollector
+    - One per node with Ceph components
+    - Collects crash data for debugging
+  - rook-ceph-agent / rook-discover
+    - DaemonSets used during initial discovery and device mapping
+    - Usually run on all nodes, but mainly used during setup or when adding storage nodes
+</pre>  
 
 ## Info - Creating and Managing Users,Groups in OpenShift
 <pre>
@@ -99,7 +139,6 @@ cat /tmp/htpasswd
 oc login -u kubeadmin -p https://
 oc create secret generic htpasswd-secret --from-file htpasswd=/tmp/htpasswd -n openshift-config
 oc get oauth cluster -o yaml > oauth.yml
-
 ```
 
 Edit the oauth.yml
