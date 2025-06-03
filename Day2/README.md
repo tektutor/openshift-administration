@@ -153,13 +153,21 @@ Find all the containers running within the ovnkube-node pod
 ```
 crictl ps -p <pod-id> -o json | jq -r '.containers[]'
 ```
-![image](https://github.com/user-attachments/assets/dc582182-3598-46d3-b582-9fe271b8af40)
+![image](https://github.com/user-attachments/assets/b2fbe440-dfd6-4600-be9e-64dc19ed3c58)
+
 
 If wish only to list out the containers names in the ovnkube-node pod
 ```
 crictl ps -p <pod-id> -o json | jq -r '.containers[] | "\(.metadata.name)'
 ```
-![image](https://github.com/user-attachments/assets/73109ea2-0e28-45a8-9a4a-80f306c6cae7)
+![image](https://github.com/user-attachments/assets/b28defe0-90d8-432b-ae79-8a6b0f33dde6)
+
+Find all the containers running within the ovnkube-control plane pod
+```
+crictl ps -p <pod-id> -o json | jq -r '.containers[]' 
+```
+
+Find all the containers running within the
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
