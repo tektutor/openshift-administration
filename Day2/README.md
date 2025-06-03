@@ -158,10 +158,11 @@ crictl ps -p <pod-id> -o json | jq -r '.containers[]'
 
 Find all the containers running within the ovnkube-control plane pod
 ```
+crictl ps -p <pod-id> -o json | jq -r '.containers[] | "\(.metadata.name)"'
 crictl ps -p <pod-id> -o json | jq -r '.containers[]' 
 ```
-
-Find all the containers running within the
+![image](https://github.com/user-attachments/assets/13eb3002-fbce-4b71-9cd1-e023d4bc1ab3)
+![image](https://github.com/user-attachments/assets/28b3cca3-0709-4b14-a82c-599167337582)
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
