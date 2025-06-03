@@ -76,6 +76,27 @@ Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --De
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
 
+## Info - ovn-kubernetes Overview
+<pre>
+- OVN-Kubernetes is the default network plugin used starting from Red Hat OpenShift 4.3 onwards 
+- OVN-Kubernetes replaces the legacy OpenShift SDN (Software Defined Network)
+- It provides a highly scalable, policy-aware, and overlay-capable SDN using OVN (Open Virtual Network), built on Open vSwitch (OVS)
+</pre>  
+
+#### Key Components
+<pre>
+OVN Control Plane
+- Configures logical networks and translates Kubernetes network
+- The below components forms the OVN Control Plane
+  - ovnkube-master
+  - ovn-northd
+  - ovn-nbdb
+  - ovn-sbdb
+OVN Node Agents
+- ovnkube-node
+- ovn-controller
+- OVS
+</pre>  
 # Info - ovn-kubernetes Network High-Level Architecture
 <pre>
 +--------------------------+
