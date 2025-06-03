@@ -38,12 +38,12 @@ oc expose deploy/nginx --port=8080
       - Ensure that any server in your network can reach any pod in the OpenShift cluster without NAT or overlays
 </pre>
 
-#### Without BGP( Packet gets Encapsulated/De-encapsulated - Leads to Performance issues )
+#### Without BGP (Packet gets Encapsulated/De-encapsulated - Leads to Performance issues)
 <pre>
 Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --Decap--> Pod B (10.1.2.2)
 </pre>
 
-#### With BGP (No Encapsulation/De-encapsulation - Better Performance )
+#### With BGP (No Encapsulation/De-encapsulation - Better Performance)
 <pre>
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
