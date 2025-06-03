@@ -115,7 +115,19 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
   - rook-ceph-agent / rook-discover
     - DaemonSets used during initial discovery and device mapping
     - Usually run on all nodes, but mainly used during setup or when adding storage nodes
-</pre>  
+</pre>
+
+Run the below command to see the pods in openshift-storage namespace
+```
+oc get pods -n openshift-storage -o wide
+```
+
+Check if the rook-ceph-operator, rook-ceph-osd-*, rook-ceph-mon-*, csi-ceph-* pods are running
+```
+oc get pods -n openshift-storage
+```
+![image](https://github.com/user-attachments/assets/3d554f92-7f19-4a21-97f5-e765366edced)
+
 
 ## Info - Creating and Managing Users,Groups in OpenShift
 <pre>
