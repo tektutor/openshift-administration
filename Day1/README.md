@@ -711,3 +711,32 @@ https://access.redhat.com/solutions/4307511
 - While creating the VM using KVM, we supply a switch --pxe, this is where the tftp server gets involved. The tftpd server will help the vm with network boot configuration. In the /var/lib/pxeboot/pxelinux.cfg folder, for each VM there is a pxe configuration file organized by its mac address.  This is how the VM is able to pick the correct path of kernel.img initramfs.img ignition file, etc
 </pre>
 
+## Info - What is the role of bootstrap VM in the Openshift installation of process?
+<pre>
+- BootStrap VM uses COREOS operating system, hence it comes with podman container engine and container runtime, kubelet service
+- the kubelet service starts the bootkube process(service)
+- bootkube starts a temporary Kubernetes cluster within the bootstrap VM using the manifest files kept at /etc/kubernetes/manifests and other manifests files from /etc/ecc folder (Early Cluster Configuration Manifest files)
+- apart from starting the K8s control plane, it also starts a static Pod called Cluster Version Operator (CVO)
+- The Cluster Version Operator takes care installing the correct version of Openshift components, images, etc.,
+- You may check /etc/kubernetes/manifests/cluster-version-operator-pod.yaml
+- The CVO uses the Custom Resource(CR) named ClusterVersion to decide the openshift version, etc.,
+- The CVO creates the openshift namespaces, deployments, Cluster Operators, etc.,
+- Some of the Cluster operators that are started are
+  - Machine Config Operator
+  - Kube Control Manager Operator
+  - Etcd Operator
+  - Network Operator
+  - Ingress Operator
+- The CVO watches all the Cluster Operators ( Waits for them to become Available ) 
+
+- When the master node is booted, the kubelet service on the master node
+- the Kubelet contacts the boostrap API Server via its DNS/IP (api-int.<cluster-name>.<base-domain>)
+- the master node kubelet registers with the boostrap node API server using the certificates injected by the ignition
+- Via the BootStrap API, the Machine Config Operator (MCO) pushes the manifests files onto the master node 
+- the kubelet container agent service in the master nodes, starts detecting the manifests files in the /etc/kubernetes/manifests folder on the master node
+- the kubelet then starts the static pods eventually creating the control plane on the master node
+- the master nodes joins the BootStrap Control Plane and partially starts serving the control plane responsibilities
+- the bookube keeps monitors the master node(s) control plane components and checks if they are healthy
+- Once all the masters nodes are up and running, i.e serving the API/etcd traffic the cluster becomes self-hosted
+- the bootkube process shuts down the temporary control plane in the bootsrap vm and master nodes take over from here
+</pre>
