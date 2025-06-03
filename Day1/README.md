@@ -758,7 +758,7 @@ https://access.redhat.com/solutions/4307511
 - the bootkube process shuts down the temporary control plane in the bootsrap vm and master nodes take over from here
 </pre>
 
-## Info - How does the RHEL based worker nodes join the OpenShift cluser?
+## Info - How RHEL based worker nodes joins the OpenShift cluster?
 <pre>
 - Once the RHEL OS is installed on the worker node, we need to manually install   \
 	cri-o \
