@@ -739,7 +739,7 @@ https://access.redhat.com/solutions/4307511
   - Ingress Operator
 - The CVO watches all the Cluster Operators ( Waits for them to become Available ) 
 
-- When the master node is booted, the kubelet service on the master node
+- When the master node is booted, the kubelet service gets started on the master node
 - the Kubelet contacts the boostrap API Server via its DNS/IP (api-int.<cluster-name>.<base-domain>)
 - the master node kubelet registers with the boostrap node API server using the certificates injected by the ignition
 - Via the BootStrap API, the Machine Config Operator (MCO) pushes the manifests files onto the master node 
