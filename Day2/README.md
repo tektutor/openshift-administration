@@ -150,7 +150,7 @@ crictl pods | grep ovn
 
 Find all the containers running within the ovnkube-node pod
 ```
-crictl ps -p <pod-id> -o json | jq -r '.containers[] | "(.metadata.name)"'
+crictl ps -p <pod-id> -o json | jq -r '.containers[] | "\(.metadata.name)"'
 crictl ps -p <pod-id> -o json | jq -r '.containers[]'
 ```
 ![image](https://github.com/user-attachments/assets/b2fbe440-dfd6-4600-be9e-64dc19ed3c58)
