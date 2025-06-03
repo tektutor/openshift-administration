@@ -698,9 +698,11 @@ https://access.redhat.com/solutions/4307511
 <pre>
 - While creating the VM using KVM, we supply an unique mac address for each VM
 - KVM sends a DHCP request to provide an IP for the mac address provided in the virt-install
-- Master nodes gets an IP address assigned by dhcp server ( in our case, a fixed static address gets assigned based on /etc/dhcpd.conf )
+- Master nodes gets an IP address assigned by dhcp server ( in our case, a fixed static address gets assigned 
+  based on /etc/dhcpd.conf )
 - the bootstrap vm will now be able to resolve the master node using its dns-name master01.ocp4.rps.com based on /etc/named/zonefile.db configuration done in the named(bind) dns server
-- While creating the VM using KVM, we supply a switch --pxe, this helps the VM pick the kernel parameters, i.e which ignition file it must be using, the web server url from where it can download the kernel.img, initramfs.img, ignition files, etc
+- While creating the VM using KVM, we supply a switch --pxe, this helps the VM pick the kernel parameters, 
+ i.e which ignition file it must be using, the web server url from where it can download the kernel.img, initramfs.img, ignition  files, etc
 </pre>
 
 ## Info - How does the worker node get the ignition file ?
@@ -733,7 +735,8 @@ https://access.redhat.com/solutions/4307511
 - the Kubelet contacts the boostrap API Server via its DNS/IP (api-int.<cluster-name>.<base-domain>)
 - the master node kubelet registers with the boostrap node API server using the certificates injected by the ignition
 - Via the BootStrap API, the Machine Config Operator (MCO) pushes the manifests files onto the master node 
-- the kubelet container agent service in the master nodes, starts detecting the manifests files in the /etc/kubernetes/manifests folder on the master node
+- the kubelet container agent service in the master nodes, starts detecting the manifests files in the 
+  /etc/kubernetes/manifests folder on the master node
 - the kubelet then starts the static pods eventually creating the control plane on the master node
 - the master nodes joins the BootStrap Control Plane and partially starts serving the control plane responsibilities
 - the bookube keeps monitors the master node(s) control plane components and checks if they are healthy
