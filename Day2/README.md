@@ -26,7 +26,7 @@ In OpenShift, native Pod-to-Pod communication is typically handled via SDN (Soft
 
 Here’s how BGP helps:
 
-🔶 1. Using MetalLB for BGP in OpenShift
+1. Using MetalLB for BGP in OpenShift
 MetalLB is a load-balancer implementation for bare-metal Kubernetes clusters.
 
 It supports BGP mode, where it peers with external routers and announces service IPs via BGP.
@@ -42,7 +42,7 @@ External routers know how to reach the Pod IPs directly.
 
 Pod-to-Pod traffic, even across different clusters or data centers, can be routed via standard IP routing with no encapsulation overhead (unlike VXLAN or Geneve).
 
-🔶 2. Using Calico with BGP
+2. Using Calico with BGP
 Calico is a CNI plugin that supports BGP natively.
 
 When used in OpenShift (usually in custom or bare-metal deployments), Calico advertises Pod CIDRs over BGP.
@@ -56,7 +56,7 @@ Direct routing = better performance, lower latency.
 
 Useful in multi-cluster or hybrid cloud environments.
 
-🔶 3. Pod-to-Pod Communication across Clusters (Hybrid/Multicloud)
+3. Pod-to-Pod Communication across Clusters (Hybrid/Multicloud)
 In multi-cluster OpenShift setups, or between OpenShift and other Kubernetes clusters, BGP can help:
 
 Cluster A advertises Pod CIDRs to the network.
@@ -67,7 +67,7 @@ Traffic between pods in both clusters routes through the shared network, using B
 
 This avoids the need for VPNs or tunnel encapsulation.
 
-🔶 4. Integrating with Existing Network Infrastructure
+4. Integrating with Existing Network Infrastructure
 BGP is used to:
 
 Inform your data center routers or leaf switches about pod IPs.
