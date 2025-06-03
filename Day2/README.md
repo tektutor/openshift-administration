@@ -147,6 +147,7 @@ List all ovn-kubernetes network pods
 crictl pods | grep ovn
 ```
 ![image](https://github.com/user-attachments/assets/1c8a1b04-2106-4fcb-909f-9a57113a3d80)
+![image](https://github.com/user-attachments/assets/bc749c35-53db-4f0c-92ee-c2a78a89f941)
 
 Find all the containers running within the ovnkube-node pod
 ```
