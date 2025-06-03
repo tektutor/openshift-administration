@@ -694,7 +694,7 @@ For further details
 https://access.redhat.com/solutions/4307511	
 </pre>
 
-## Info - How does the master node get the ignition file
+## Info - How does the master node get the ignition file ?
 <pre>
 - While creating the VM using KVM, we supply an unique mac address for each VM
 - KVM sends a DHCP request to provide an IP for the mac address provided in the virt-install
@@ -703,7 +703,7 @@ https://access.redhat.com/solutions/4307511
 - While creating the VM using KVM, we supply a switch --pxe, this helps the VM pick the kernel parameters, i.e which ignition file it must be using, the web server url from where it can download the kernel.img, initramfs.img, ignition files, etc
 </pre>
 
-## Info - How does the worker node get the ignition file
+## Info - How does the worker node get the ignition file ?
 <pre>
 - While creating the VM using KVM, we supply an unique mac address for each VM
 - KVM sends a DHCP request to provide an IP for the mac address provided in the virt-install
