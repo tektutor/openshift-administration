@@ -693,3 +693,21 @@ For further details
 <pre>
 https://access.redhat.com/solutions/4307511	
 </pre>
+
+## Info - How does the master node get the ignition file
+<pre>
+- While creating the VM using KVM, we supply an unique mac address for each VM
+- KVM sends a DHCP request to provide an IP for the mac address provided in the virt-install
+- Master nodes gets an IP address assigned by dhcp server ( in our case, a fixed static address gets assigned based on /etc/dhcpd.conf )
+- the bootstrap vm will now be able to resolve the master node using its dns-name master01.ocp4.rps.com based on /etc/named/zonefile.db configuration done in the named(bind) dns server
+- While creating the VM using KVM, we supply a switch --pxe, this helps the VM pick the kernel parameters, i.e which ignition file it must be using, the web server url from where it can download the kernel.img, initramfs.img, ignition files, etc
+</pre>
+
+## Info - How does the worker node get the ignition file
+<pre>
+- While creating the VM using KVM, we supply an unique mac address for each VM
+- KVM sends a DHCP request to provide an IP for the mac address provided in the virt-install
+- Worker nodes gets an IP address assigned by dhcp server ( in our case, a fixed static address gets assigned based on /etc/dhcpd.conf )
+- While creating the VM using KVM, we supply a switch --pxe, this is where the tftp server gets involved. The tftpd server will help the vm with network boot configuration. In the /var/lib/pxeboot/pxelinux.cfg folder, for each VM there is a pxe configuration file organized by its mac address.  This is how the VM is able to pick the correct path of kernel.img initramfs.img ignition file, etc
+</pre>
+
