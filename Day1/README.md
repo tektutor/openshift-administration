@@ -801,3 +801,44 @@ https://access.redhat.com/solutions/4307511
   - Kubelet and CRI-O should run with correct SELinux, firewall, and certificates
   - RHEL must use compatible OpenShift RPMs provided via Red Hat repos
 </pre>
+
+## Info - Openshift Overview
+<pre>
+- Red Hat Openshift is built on top on Kubernetes Container Orchestration Platform	
+- it is Red Hat's distribution of Kubernetes
+- Kubernetes/Openshift Control Plane7
+  - API Server (Pod)
+  - etcd database (Pod)
+  - Scheduler (Pod)
+  - Control Managers (Pod)
+    - Deployment Controller
+    - ReplicaSet Controller
+    - DaemonSet Controller
+    - Node Controller
+    - Endpoint Controller ( Responsible for creating endpoint resource and attaching the same with services )
+- Kubernetes/Openshift Controller
+  - is a never ending application that has unrestricted permissions to watch any namespace/project within Openshift for certain resources     type: object
+        properties:
+          training:
+            type: string
+          duration:
+            type: string
+          from: 
+            type: string
+          to:
+            type: string
+  - For instance, 
+    - Deployment Controller monitors a resource called Deployment
+    - ReplicaSet Controller that monitors and manages ReplicaSet
+  - Deployment, ReplicaSet all these just JSON configuration files maintained within etcd key/value database
+- Kubernetes supports adding custom resources to extend the Kubernetes API by defining
+  - Custom Resources using Custom Resource Definition (CRD)
+  - To manage the Custom Resources, we also need to provide Custom Controllers
+
+</pre>
+
+## Info - Kubernetes/Openshift Operator
+<pre>
+- is a collection of many Custom Resources (CRD yaml files) and Custom Controllers
+- 
+</pre>
