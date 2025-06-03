@@ -1,5 +1,10 @@
 ## Day 1
 
+## Please provide your first day feedback 
+<pre>
+https://survey.zohopublic.com/zs/PhCIdu	
+</pre>	
+
 ## Red Hat Openshift System Requirements
 Our Training Lab Hardware configurations ( For a multi-node Openshift cluster setup - with 3 masters and 3 worker nodes )
 <pre>
