@@ -17,7 +17,7 @@ oc get deploy
 oc expose deploy/nginx --port=8080 
 ```
 
-# Info - How Calico(BGP) supports to Pod to Pod communication without communication overhead
+# Info - How Calico(BGP) supports to Pod to Pod communication without communication overhead ?
 <pre>
 - Calico is a CNI plugin that supports BGP natively
 - Calico advertises Pod CIDRs over BGP
