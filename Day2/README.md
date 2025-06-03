@@ -22,7 +22,35 @@ oc expose deploy/nginx --port=8080
 - Calico is a CNI plugin that supports BGP natively
 - Calico advertises Pod CIDRs over BGP
 - Each node announces the IPs of its local pods to the BGP peers
-- Benefits
+- Calico network fabric creates a DaemonSet, so that it deploys one Calico agent pod per node
+- Calico agent
+  - hosts about 4 components
+    - Felix 
+      - Main networking agent for Calico
+      - Programs routes, iptables rules, and IP sets
+      - Handles policy enforcement (NetworkPolicies)
+      - Coordinates with the BGP daemon to manage advertised routes
+      - does not speak BGP directly, but it programs the kernel routes that are advertised by the BGP agent
+    - Bird ( BGP Daemon - BGP Speaker )
+      - handles BGP Peering
+      - The actual BGP speaker
+      - Communicates with upstream routers or other Calico nodes via BGP
+      - Advertises:
+        - The Pod CIDR for the local node
+        - Service IPs or host routes, if configured
+        - Listens for BGP updates from other nodes and peers
+        - BIRD is the default BGP implementation, optionally can configure GoBGP instead for lighter, faster large-scale use
+    - Typha (optional)
+      - Not a per-node component, but helps scale Felix in large clusters
+      - Acts as a proxy between Felix agents and etcd or the Kubernetes API server
+      - Reduces the number of direct API connections
+      - may see calico-typha running as a Deployment in larger OpenShift + Calico setups
+    - CNI Plugin(calico-cni)
+      - Manages Pod networking lifecycle
+      - Allocates Pod IPs from IP pools.
+      - Ensures the Pod is connected to the node’s network
+      - This isn’t directly part of BGP, but it works with Felix to assign routable IPs
+- Benefits of Calico
   - No overlay network needed – pure L3 routing.
   - Direct routing = better performance, lower latency.
   - Useful in multi-cluster or hybrid cloud environments.
