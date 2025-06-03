@@ -9,7 +9,13 @@ Intel Xeon Processor with 48 Cores
 </pre>	
 
 #### Master Nodes (Control Plane)
-<pre>
+<pre>Not all MCO features work on RHEL. For example:
+
+Kernel upgrades and Ignition are RHCOS-only.
+
+Some machine configs might not apply unless explicitly tailored for RHEL.
+
+
 - This can be physical server or a Virtual machine
 - this can be server from your private datacenter or an AWS ec2 instance or an azure VMS
 - a minimum of 3 master nodes are required for HA
@@ -775,11 +781,13 @@ https://access.redhat.com/solutions/4307511
 	  --signer-cert=/etc/kubernetes/ca.crt \
 	  --signer-key=/etc/kubernetes/ca.key \
 	  --signer-serial=/etc/kubernetes/ca.serial.txt
-- The other option is to use the bootstrap kubeconfig downloaded from the OpenShift installer assets (auth/kubeconfig, auth/bootstrap.kubeconfig).
+- The other option is to use the bootstrap kubeconfig downloaded from the OpenShift installer assets 
+  (auth/kubeconfig, auth/bootstrap.kubeconfig).
 - We need to place it at /etc/kubernetes/kubelet.conf on the worker node
 - Once the kubelet starts running the worker nodes starts showing up
 - The worker node kubelet contacts the control plane requesting for certificate and appear in NotReady state
-- Once the CSR is approved and when all the components in worker node are found to be stable (CRI-O is running, OVN-Kubernetes network, etc.,), the worker node is reported as Ready 
+- Once the CSR is approved and when all the components in worker node are found to be stable 
+  (CRI-O is running, OVN-Kubernetes network, etc.,), the worker node is reported as Ready 
 - Optionally you could use MachineConfigs, if you are using Machine Config Operators(MCO)
 - Security considerations
   - Not all MCO features work on RHEL. For example:
