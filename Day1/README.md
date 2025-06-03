@@ -842,3 +842,29 @@ https://access.redhat.com/solutions/4307511
 - is a collection of many Custom Resources (CRD yaml files) and Custom Controllers
 - 
 </pre>
+
+## Info - Helm
+<pre>
+- Helm is a package manager for Kubernetes/Openshift applications
+- the applications are packaged as helm charts
+- helm comes with a web portal, where one can download/upload resusable applications form opensource community to use
+- Practical usecase
+  - let's say I'm trying to deploy a banking application that follows Microservice architectures
+  - 
+</pre>
+
+
+## Info - Kubernetes Resources
+<pre>
+- Deployment
+  - Deployment Controller manages Deployment Resource
+  - Deployment Controller ensures the requested number of pods are running within the cluster at any point of time
+  - Deployment Controller doesn't care, where those pods are running, it won't distribute the pods equally on all nodes
+- ReplicaSet
+- Pod ( smallest unit that can be deployed into Kubernetes/Openshift )
+- DaemonSet 
+  - If we have 5 nodes in the Kubernetes/Openshift cluster
+  - If we want to run one Pod per Node, then DaemonSet is used
+  - DaemonSet is managed by DaemonSet Controller which identifies the number of nodes in your cluster and deploys one pod per node
+</pre>
+
