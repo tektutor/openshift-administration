@@ -76,6 +76,65 @@ Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --De
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
 
+# Info - ovn-kubernetes Network High-Level Architecture
+<pre>
++--------------------------+
+|  Kubernetes API Server   |
++--------------------------+
+
+        |
+        v
+
++--------------------------+
+|     ovnkube-master       |
++--------------------------+
+
+        |
+        v
+
++--------------------------+
+|       OVN NB-DB          |
++--------------------------+
+
+        |
+        v
+
++--------------------------+
+|       ovn-northd         |
++--------------------------+
+
+        |
+        v
+
++--------------------------+
+|       OVN SB-DB          |
++--------------------------+
+
+        |                          |
+        v                          v
+
++----------------+         +----------------+
+|  Node A        |         |  Node B        |
+|  ------------  |         |  ------------  |
+|  ovnkube-node  |         |  ovnkube-node  |
+|  ovn-controller|         |  ovn-controller|
++----------------+         +----------------+
+
+        |                          |
+        v                          v
+
++--------------+           +--------------+
+| OVS (Node A) |           | OVS (Node B) |
++--------------+           +--------------+
+
+        |                          |
+        v                          v
+
++---------+                +---------+
+| Pod A   |                | Pod B   |
++---------+                +---------+  
+</pre>
+
 ## Lab - Finding OVN-Kubernetes Components that are running with a master node
 Let's get inside the master-1 node
 ```
