@@ -76,6 +76,31 @@ Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --De
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
 
+## Lab - Finding OVN-Kubernetes Components that are running with a master node
+Let's get inside the master-1 node
+```
+oc debug node/master01.ocp4.rps.com
+```
+![image](https://github.com/user-attachments/assets/5003059e-d480-4b9a-b4c2-ec5d0c905358)
+
+List all ovn-kubernetes network pods
+```
+crictl pods | grep ovn
+```
+![image](https://github.com/user-attachments/assets/1c8a1b04-2106-4fcb-909f-9a57113a3d80)
+
+Find all the containers running within the ovnkube-node pod
+```
+crictl ps -p <pod-id> -o json | jq -r '.containers[]'
+```
+![image](https://github.com/user-attachments/assets/dc582182-3598-46d3-b582-9fe271b8af40)
+
+If wish only to list out the containers names in the ovnkube-node pod
+```
+crictl ps -p <pod-id> -o json | jq -r '.containers[] | "\(.metadata.name)'
+```
+![image](https://github.com/user-attachments/assets/73109ea2-0e28-45a8-9a4a-80f306c6cae7)
+
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
 - Need to install Openshift Data Foundation Operator a.k.a (ODF Operator)
