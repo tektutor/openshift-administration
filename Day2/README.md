@@ -1,5 +1,23 @@
 ## Day 2
 
+## Lab - Creating a project and deploy nginx web server
+```
+oc new-project jegan
+oc create deploy nginx --image=bitnami/nginx:latest --replicas=3 -o yaml --dry-run=client
+oc create deploy nginx --image=bitnami/nginx:latest --replicas=3 -o yaml --dry-run=client > nginx-deploy.yml
+```
+
+Make sure you edit the nginx-deploy.yml and add the imagePullPolicy: IfNotPresent
+![image](https://github.com/user-attachments/assets/7037dbfa-5905-44d5-aa01-f77c6d94aa12)
+
+Now you may deploy nginx in your project
+```
+oc apply -f nginx-deploy.yml
+oc get deploy
+oc expose deploy/nginx --port=8080 
+```
+
+
 ## Info - Creating and Managing Users,Groups in OpenShift
 <pre>
 - Authentication in OpenShift is managed by authentication operator
@@ -81,3 +99,4 @@ oc delete user tektutor-developer2
 oc get users
 oc login -u tektutor-developer2 -p rps@123
 ```
+
