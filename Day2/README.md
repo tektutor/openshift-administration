@@ -419,6 +419,42 @@ Expected outcome
 - though AppArmor can't be enabled if the underlying platform where Openshift runs supports it, however Red Hat Openshift won't support if something is broken, we are on our own in case things go wrong, hence not recommended
 </pre>
 
+## Info - Image Signing
+<pre>
+- ensures the authenticiy and integrity of container images
+- it confirms the image isn't tampered 
+- it comes from trusted source
+- Examples
+  - cosign
+  - dct - docker content trust
+  - notary
+  - Red Hat's Simple Signing
+</pre>
+
+## Info - Image Scanning
+<pre>
+- identify any vulnerabilities, malware
+- tools
+  - Clair
+  - Grype
+  - SysDig
+  - JFrog Xray
+  - Trivy
+</pre>  
+
+## Lab - Signing and scanning a container image
+
+Image signing
+```
+cosign sign --key cosign.key some-microservice-img:latest
+cosign verify --key cosign.pub some-microservice-img:latest
+```
+
+Image scanning
+```
+trivy image some-microservice-img:latest
+```
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
