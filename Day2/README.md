@@ -81,6 +81,20 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 - OVN-Kubernetes is the default network plugin used starting from Red Hat OpenShift 4.3 onwards 
 - OVN-Kubernetes replaces the legacy OpenShift SDN (Software Defined Network)
 - It provides a highly scalable, policy-aware, and overlay-capable SDN using OVN (Open Virtual Network), built on Open vSwitch (OVS)
+- OVN-Kubernetes is an independent open-source project used by Red Hat Openshift
+- OVN-Kubernetes supports two types of architecture
+  - default mode ( centralized control plane architecture )
+  - interconnect mode ( distributed control plane architecture )
+- Red Hat Openshift supports the distributed control plane architecture
+- In the ovn-kubernetes distributed control plane architecture
+  - Two types of Pods are supported
+    1. OVNKube Control Plane Pod
+       - Containers
+         - kube-rbac-proxy
+         - ovnkube-cluster-manager
+    2. OVNKube Node Pod
+       - Containers
+         - 
 </pre>  
 
 #### Key Components
@@ -205,6 +219,30 @@ crictl ps -p <pod-id> -o json | jq -r '.containers[]'
 ```
 ![image](https://github.com/user-attachments/assets/13eb3002-fbce-4b71-9cd1-e023d4bc1ab3)
 ![image](https://github.com/user-attachments/assets/28b3cca3-0709-4b14-a82c-599167337582)
+
+## Lab - Find all pods running in openshift cluster related to ovn-kubernetes network fabric
+```
+oc get pods -n openshift-ovn-kubernetes
+```
+
+List all containers of ovnkube-control-plane pod in master node
+```
+oc get pod/ovnkube-control-plane-6bf48b856d-2xm7t -n openshift-ovn-kubernetes -o json | jq -r '[.spec.containers[].name]'
+```
+
+List all containers of ovnkube-node pod in master node
+```
+oc get pod ovnkube-node-lctc4 -n openshift-ovn-kubernetes | jq -r '[.spec.containers[].name]'
+```
+
+List all containers of ovnkube-node pod in worker node
+```
+oc get pod ovnkube-node-lctc4 -n openshift-ovn-kubernetes | jq -r '[.spec.containers[].name]'
+```
+
+![image](https://github.com/user-attachments/assets/4bc07de3-097a-4bc5-8d18-a5e35fdbb956)
+![image](https://github.com/user-attachments/assets/51ef3d8e-1ea6-4cdc-ac6a-a39822b961f3)
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
