@@ -274,10 +274,43 @@ oc apply -f custom-scc.yml
 oc create sa privileged-sa
 oc apply -f custom-scc.yml
 
+oc login -u developer
+cat pod-with-custom-scc.yml
+oc apply -f pod-with-custom-scc.yml
+oc create deploy nginx --image=bitnami/nginx:latest
+oc get po
+oc get po -w
+oc get pod nginx-85458687c9-8pjlg -o jsonpath='{.spec.serviceAccountName}'
+oc adm policy who-can use scc privileged
+oc adm policy add-scc-to-user privileged -z default -n jegan system:serviceaccount:jegan:default
+cat pod-with-custom-scc.yml
+oc whoami
+oc apply -f pod-with-custom-scc.yml
+oc get po
 ```
 Expected output
 ![image](https://github.com/user-attachments/assets/dbad1a34-32c9-4f3e-8454-6f893526adbc)
 ![image](https://github.com/user-attachments/assets/ae21cc9b-f636-4c05-a646-0f735d79f62f)
+![image](https://github.com/user-attachments/assets/96269c29-d3dd-41c4-ab09-9bf809bde921)
+![image](https://github.com/user-attachments/assets/9d6b95c6-8e48-4077-b122-fe672a5f4998)
+![image](https://github.com/user-attachments/assets/682920ac-5036-4f63-a11c-56c36f875f0c)
+![image](https://github.com/user-attachments/assets/1d7dd177-898e-410f-98d9-75c595c91e58)
+![image](https://github.com/user-attachments/assets/a8578f69-00dd-4cbd-b7ea-2e247c20cb3d)
+![image](https://github.com/user-attachments/assets/821dca56-2763-4810-9870-60cf0349e278)
+
+Ideally, developer account should not given such privileged access, hence let's revoke the permission
+```
+oc login -u kubeadmin
+oc project jegan
+oc delete -f pod-with-custom-scc.yml
+oc whoami
+oc adm policy remove-scc-from-user privileged -z default -n jegan
+oc login -u developer
+oc apply -f pod-with-custom-scc.yml
+```
+Expected output
+![image](https://github.com/user-attachments/assets/4e7096b2-bd0b-498c-b043-e2e07f8a88fa)
+![image](https://github.com/user-attachments/assets/961bfb05-72cf-4045-8192-ecd7b7ec9f6e)
 
 
 ## Lab - Deploying Ceph strorage into Openshift
