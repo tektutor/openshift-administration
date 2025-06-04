@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tekton-pv-jegan  # Replace 'jegan' with your name
+  labels:
+    name: jegan  # Replace 'jegan' with your name
+spec:
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.1.231   # This IP has to be replaced with 192.168.1.232 in case you are connected to the second server
+    path: /var/nfs/jegan/tekton  # Replace this path with /var/nfs/user05/tekton - replace user05 with your linux username
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tekton-pvc-jegan  # Replace 'jegan' with your name
+  labels:
+    name: jegan  # Replace 'jegan' with your name
+spec:
+  selector:
+    matchLabels:
+      name: jegan  # Replace 'jegan' with your name
+  resources:
+    requests:
+      storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteMany
+---
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: github-clone-tr-
+spec:
+  taskRef:
+    name: git-clone
+  params:
+    - name: url
+      value: https://github.com/tektutor/tekton-march-2025.git
+
+    - name: revision
+      value: main
+
+    - name: subdirectory
+      value: source
+
+  workspaces:
+  - name: output
+    persistentVolumeClaim:
+      claimName: tekton-pvc-jegan   # Replace 'jegan' with your name

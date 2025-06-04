@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: task-with-multiple-steps
+spec:
+  steps:
+  - name: step-1 
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command: 
+    - echo
+    args:
+    - "Step 1 => Hello World !"
+
+  - name: step-2 
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command: 
+    - echo
+    args:
+    - "Step 2 => Hello World !"
+
+  - name: step-3 
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command: 
+    - echo
+    args:
+    - "Step 3 => Hello World !"

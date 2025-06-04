@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: maven-build-tr-
+spec:
+  taskRef:
+    name: maven
+  params:
+  - name: CONTEXT_DIR
+    value: source/Day8/hello-microservice
+
+  - name: deleteExisting
+    value: false
+
+  - name: GOALS
+    value:
+    - clean
+    - package
+
+  workspaces:
+  - name: source
+    persistentVolumeClaim:
+      claimName: tekton-pvc-jegan   # Replace 'jegan' with your name
+
+  - name: maven-settings
+    emptyDir: {}
