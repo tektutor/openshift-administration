@@ -76,7 +76,7 @@ Pod A (10.1.1.1) --VXLAN--> Node1 (192.168.1.10) ----> Node2 (192.168.1.20) --De
 Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 </pre>
 
-## Info - ovn-kubernetes Overview
+## Info - Red Hat Openshift ovn-kubernetes Network Fabric Overview
 <pre>
 - OVN-Kubernetes is the default network plugin used starting from Red Hat OpenShift 4.3 onwards 
 - OVN-Kubernetes replaces the legacy OpenShift SDN (Software Defined Network)
@@ -85,7 +85,7 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 - OVN-Kubernetes supports two types of architecture
   - default mode ( centralized control plane architecture )
   - interconnect mode ( distributed control plane architecture )
-- Red Hat Openshift supports the distributed control plane architecture
+- Red Hat Openshift supports the distributed control plane architecture i.e interconnect mode
 - In the ovn-kubernetes distributed control plane architecture
   - Two types of Pods are supported
     1. OVNKube Control Plane Pod
@@ -94,102 +94,24 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
          - ovnkube-cluster-manager
     2. OVNKube Node Pod
        - Containers
-         - 
-</pre>  
-
-#### Key Components
-<pre>
-OVN Control Plane
-- Configures logical networks and translates Kubernetes network
-- The below components forms the OVN Control Plane
-  - ovnkube-master
-  - ovn-northd
-  - ovn-nbdb
-  - ovn-sbdb
-OVN Node Agents
-- ovnkube-node
-- ovn-controller
-- OVS
+         - ovn-controller
+         - ovn-acl-logging
+         - kube-rbac-proxy-mode
+         - kube-rbac-proxy-ovn-metrics
+         - northd
+         - nbdb
+         - sddb
+         - ovnkube-controller
 </pre>  
 
 #### OpenShift OVN-Kubernetes Workflow
-- In Master Nodes
-  - Pod created via OpenShift API, triggers CNI (OVN-Kubernetes)
-  - ovnkube-master watches for Kubernetes events:
-    - Pod creation/deletion
-    - Service, Namespace, NetworkPolicy updates
-  - Writes configuration to OVN NB-DB (Logical Switches, Routers, ACLs).
-  - ovn-northd translates NB-DB to SB-DB entries
-
-- In Worker Nodes
-  - ovnkube-node and ovn-controller runs on every worker node
-  - ovn-controller watches SB-DB and configures OVS locally
-  - OVS:
-    - Connects pod to a logical switch via a veth pair
-    - Handles Geneve encapsulation for pod-to-pod traffic across nodes
-    - Applies ACLs for NetworkPolicy enforcement
-
-
-# Info - ovn-kubernetes Network High-Level Architecture
 <pre>
-+--------------------------+
-|  Kubernetes API Server   |
-+--------------------------+
-
-        |
-        v
-
-+--------------------------+
-|     ovnkube-master       |
-+--------------------------+
-
-        |
-        v
-
-+--------------------------+
-|       OVN NB-DB          |
-+--------------------------+
-
-        |
-        v
-
-+--------------------------+
-|       ovn-northd         |
-+--------------------------+
-
-        |
-        v
-
-+--------------------------+
-|       OVN SB-DB          |
-+--------------------------+
-
-        |                          |
-        v                          v
-
-+----------------+         +----------------+
-|  Node A        |         |  Node B        |
-|  ------------  |         |  ------------  |
-|  ovnkube-node  |         |  ovnkube-node  |
-|  ovn-controller|         |  ovn-controller|
-+----------------+         +----------------+
-
-        |                          |
-        v                          v
-
-+--------------+           +--------------+
-| OVS (Node A) |           | OVS (Node B) |
-+--------------+           +--------------+
-
-        |                          |
-        v                          v
-
-+---------+                +---------+
-| Pod A   |                | Pod B   |
-+---------+                +---------+  
+- When a pod is created, the ovnkube-cluster-manager allocates a unique subnet to the node hosting the pod
+- The node's ovn-controller programs the local OVS to set up the necessary networking, including logical switches and routers
+- Network policies are enforced locally by the ovn-controller, which programs the OVS with appropriate OpenFlow rules
+- Services are exposed through local routers, and DNS entries are updated to reflect the new services.
+- For communication between pods on different nodes, the local OVS instances handle traffic routing, leveraging the distributed OVN architecture
 </pre>
-
-
 
 ## Lab - Finding OVN-Kubernetes Components that are running with a master node
 Let's get inside the master-1 node
