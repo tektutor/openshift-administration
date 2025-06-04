@@ -102,7 +102,37 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
          - nbdb
          - sddb
          - ovnkube-controller
-</pre>  
+  
+Logical Switches
+- Represent nodes or namespaces in the Kubernetes cluster
+- Each node(master/worker) has a single logic switch
+
+Logical Switch Ports
+- Represent pod interfaces
+- Each pod gets a logical port that connects it to the logical switch
+
+Logical Routers
+- Represent the cluster's logical routing infrastructure, often just one logical router per cluster
+- Routes traffic between logical switches (i.e., between pods on different nodes).
+
+Logical Router Ports
+- Connect logical switches to the logical router
+
+ACLs (Access Control Lists)
+- Used to enforce NetworkPolicies in Kubernetes
+- Define rules to allow or deny traffic to and from pods
+
+Load Balancers
+- Represent Kubernetes Services
+- Used to implement service IPs and ClusterIP-based routing
+
+Address Sets and Port Groups
+- Support advanced policy and service definitions
+- Help with grouping IPs or ports for easier policy management
+
+Static Routes
+- Used by the logical router to route traffic across logical switches.
+</pre>
 
 #### OpenShift OVN-Kubernetes Workflow
 <pre>
