@@ -358,6 +358,51 @@ Expected output
 
 Trying changing the pod-security.kubernetes.io/enforce=privileged and later to pod-security.kubernetes.io/enforce=baseline and observe the behaviour.
 
+## Lab - Using Pod Security Standard using Hashicorp vault
+```
+cd ~/openshift-administration
+git pull
+cd Day2/pod-security-standard-using-hashicorp-vault
+
+oc apply -f namespace.yaml
+oc apply -f serviceaccount.yaml
+oc apply -f configmap.yaml
+oc apply -f pod.yaml
+```
+
+Expected output
+
+Vault Setup, need to export KUBERNETES_HOST to api-server endpoint url
+<pre>
+vault auth enable kubernetes
+
+vault write auth/kubernetes/config \
+  token_reviewer_jwt="$(kubectl get secret $(kubectl get serviceaccount vault-auth -n vault-psa-demo -o jsonpath='{.secrets[0].name}') -n vault-psa-demo -o jsonpath='{.data.token}' | base64 --decode)" \
+  kubernetes_host="https://$KUBERNETES_HOST" \
+  kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+vault policy write app-policy - <<EOF
+path "secret/data/*" {
+  capabilities = ["read"]
+}
+EOF
+
+vault write auth/kubernetes/role/demo-role \
+  bound_service_account_names="vault-auth" \
+  bound_service_account_namespaces="vault-psa-demo" \
+  policies="app-policy" \
+  ttl="24h"
+</pre>
+
+Expected outcome
+<pre>
+- Namespace enforces restricted Pod Security Standard (PSA)
+- Vault Agent pod runs as non-root, no escalation, seccomp enabled
+- Vault Agent authenticates using Openshift service account vault-auth
+- Secrets are written to a shared emptyDir volume /vault/secrets
+- Your app container reads the secret file securely  
+</pre>  
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
