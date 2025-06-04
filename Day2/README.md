@@ -455,6 +455,28 @@ Image scanning
 trivy image some-microservice-img:latest
 ```
 
+## Info - Gatekeeper or kyverno to enforce policy
+<pre>
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: block-latest-tag
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: block-latest
+    match:
+      resources:
+         kind:
+         - Pod
+      validate:
+         message: "Using latest image tag is not allowed"
+         pattern:
+           spec:
+             containers:
+             - image: bitnami/nginx:latest
+</pre>
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
