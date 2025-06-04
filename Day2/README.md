@@ -358,6 +358,15 @@ Expected output
 
 Trying changing the pod-security.kubernetes.io/enforce=privileged and later to pod-security.kubernetes.io/enforce=baseline and observe the behaviour.
 
+You can try changing the policy to apply the bad-pod.yml file
+```
+oc label namespace jegan-dev-project \
+  pod-security.kubernetes.io/enforce=baseline \
+  pod-security.kubernetes.io/enforce-version=latest
+
+oc apply -f bad-pod.yml
+```
+
 ## Lab - Using Pod Security Standard using Hashicorp vault
 ```
 cd ~/openshift-administration
