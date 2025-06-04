@@ -314,7 +314,7 @@ Expected output
 
 ## Info - PodSecurityPolicies(PSP)
 <pre>
-- PodSecurityPolicies work in Kubernetes prior to v1.25 but not in Openshift
+- PodSecurityPolicies works in Kubernetes prior to v1.25 but not in Openshift
 - PodSecurityPolicies were deprecated in Kubernetes v1.21 and removed in v1.25
 - Using Security Context Contraint(SCC) is ideal or alternatively in Openshift we can use Pod Security Admission(PSA)
 </pre>
@@ -357,6 +357,15 @@ Expected output
 ![image](https://github.com/user-attachments/assets/45747bcb-a026-4864-8a1e-7ca226130efe)
 
 Trying changing the pod-security.kubernetes.io/enforce=privileged and later to pod-security.kubernetes.io/enforce=baseline and observe the behaviour.
+
+You can try changing the policy to apply the bad-pod.yml file
+```
+oc label namespace jegan-dev-project \
+  pod-security.kubernetes.io/enforce=baseline \
+  pod-security.kubernetes.io/enforce-version=latest
+
+oc apply -f bad-pod.yml
+```
 
 ## Lab - Using Pod Security Standard using Hashicorp vault
 ```
@@ -419,6 +428,83 @@ Expected outcome
 - though AppArmor can't be enabled if the underlying platform where Openshift runs supports it, however Red Hat Openshift won't support if something is broken, we are on our own in case things go wrong, hence not recommended
 </pre>
 
+## Info - Image Signing
+<pre>
+- ensures the authenticiy and integrity of container images
+- it confirms the image isn't tampered 
+- it comes from trusted source
+- Examples
+  - cosign
+  - dct - docker content trust
+  - notary
+  - Red Hat's Simple Signing
+</pre>
+
+## Info - Image Scanning
+<pre>
+- identify any vulnerabilities, malware
+- tools
+  - Clair
+  - Grype
+  - SysDig
+  - JFrog Xray
+  - Trivy
+</pre>  
+
+## Lab - Signing and scanning a container image
+
+Image signing
+```
+cosign sign --key cosign.key some-microservice-img:latest
+cosign verify --key cosign.pub some-microservice-img:latest
+```
+
+Image scanning
+```
+trivy image some-microservice-img:latest
+```
+
+## Info - Gatekeeper will allow using container images only from allowed registry/repository
+<pre>
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepo
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRepos
+  targets:
+  - target: admission.k8s.gatekeper.sh
+    rego: |
+      package k8sallowedrepos
+
+      violation[{"msg": msg}] {
+        container := input.review.object.spec.containers[_]
+        not startswith(container.image, allowed_repos[_]
+        msg := sprintf("Container image '%v' is not from approved registry", [container.image])
+      }
+
+      allowed_repos := input.parameters.allowedRepos
+</pre>
+
+Another example
+<pre>
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepo
+spec:
+  match:
+    kinds:
+    - apiGroups: [""]
+      kinds: ["Pod"]
+  parameters:
+    allowedRepos:
+    - "jfrog.tektutor.org/"
+    - "tektutor.quay/"
+</pre>
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
