@@ -455,28 +455,47 @@ Image scanning
 trivy image some-microservice-img:latest
 ```
 
-## Info - Gatekeeper or kyverno to enforce policy
+## Info - Gatekeeper will allow using container images only from allowed registry/repository
 <pre>
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
 metadata:
-  name: block-latest-tag
+  name: k8sallowedrepo
 spec:
-  validationFailureAction: enforce
-  rules:
-  - name: block-latest
-    match:
-      resources:
-         kind:
-         - Pod
-      validate:
-         message: "Using latest image tag is not allowed"
-         pattern:
-           spec:
-             containers:
-             - image: bitnami/nginx:latest
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRepos
+  targets:
+  - target: admission.k8s.gatekeper.sh
+    rego: |
+      package k8sallowedrepos
+
+      violation[{"msg": msg}] {
+        container := input.review.object.spec.containers[_]
+        not startswith(container.image, allowed_repos[_]
+        msg := sprintf("Container image '%v' is not from approved registry", [container.image])
+      }
+
+      allowed_repos := input.parameters.allowedRepos
 </pre>
 
+Another example
+<pre>
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepo
+spec:
+  match:
+    kinds:
+    - apiGroups: [""]
+      kinds: ["Pod"]
+  parameters:
+    allowedRepos:
+    - "jfrog.tektutor.org/"
+    - "tektutor.quay/"
+</pre>
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
