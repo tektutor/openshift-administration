@@ -263,12 +263,21 @@ Let's create a custom security context contraint
 cd ~/openshift-administration
 git pull
 cd Day2/security-context-constraint
+oc login -u developer -p developer
 oc whoami
 cat custom-scc.yml
 oc apply -f custom-scc.yml
+
+oc login -u kubeadmin
+oc apply -f custom-scc.yml
+
+oc create sa privileged-sa
+oc apply -f custom-scc.yml
+
 ```
 Expected output
 ![image](https://github.com/user-attachments/assets/dbad1a34-32c9-4f3e-8454-6f893526adbc)
+![image](https://github.com/user-attachments/assets/ae21cc9b-f636-4c05-a646-0f735d79f62f)
 
 
 ## Lab - Deploying Ceph strorage into Openshift
