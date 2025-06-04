@@ -403,6 +403,22 @@ Expected outcome
 - Your app container reads the secret file securely  
 </pre>  
 
+## Info - Apparmor Overview
+<pre>
+- AppArmor is a Linux kernel security module that provides Mandatory Access Control (MAC) for applications 
+- It confines programs to a set of rules that define what files and system resources they can access
+- Unlike traditional Discretionary Access Control (DAC), AppArmor policies are enforced by the kernel regardless of file permissions or user identity
+
+- Red Hat Openshift doesn't support Apparmor officially
+- Why Red Hat Openshift doesn't support it by default
+  - Openshift uses SELINUX with deep integration with Security Context Constraints
+  - Openshift doesn't test or support AppArmor configurations officially
+  - We can't manage AppArmor via OpenShift's built-in SCCs
+  - Openshift is optimized for RPM-based distributions with SELINUX
+  - AppArmor is generally used in Ubuntu/Debian
+- though AppArmor can't be enabled if the underlying platform where Openshift runs supports it, however Red Hat Openshift won't support if something is broken, we are on our own in case things go wrong, hence not recommended
+</pre>
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
