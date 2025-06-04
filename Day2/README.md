@@ -1,4 +1,4 @@
-## Day 2
+![image](https://github.com/user-attachments/assets/8daa9f72-0795-4094-98bc-d35222fb8036)## Day 2
 
 ## Lab - Creating a project and deploy nginx web server
 ```
@@ -138,7 +138,7 @@ When a pod is created, the CNI plugin (OVN-Kubernetes) creates a veth pair
 - The other end remains in the host’s root namespace and is connected to the Open vSwitch (OVS) bridge
 </pre>
 
-## Roles and responsibilities - compononent wise
+## Roles and responsibilities - component wise
 ovnkube-cluster-manager
 - allocates a unique subnet to the node hosting the pod
 kube-rbac-proxy
@@ -311,6 +311,52 @@ oc apply -f pod-with-custom-scc.yml
 Expected output
 ![image](https://github.com/user-attachments/assets/4e7096b2-bd0b-498c-b043-e2e07f8a88fa)
 ![image](https://github.com/user-attachments/assets/961bfb05-72cf-4045-8192-ecd7b7ec9f6e)
+
+## Info - PodSecurityPolicies(PSP)
+<pre>
+- PodSecurityPolicies work in Kubernetes prior to v1.25 but not in Openshift
+- PodSecurityPolicies were deprecated in Kubernetes v1.21 and removed in v1.25
+- Using Security Context Contraint(SCC) is ideal or alternatively in Openshift we can use Pod Security Admission(PSA)
+</pre>
+
+## Info - Pod Security Admssion(PSA) Overview
+<pre>
+- is built-in admission controller that enforces Kubernetes Pod Security standards on a per namespace basis
+- It supports 3 levels of security
+  1. privileged - No restrictions(most permissive)
+  2. baseline - Basic safety, allows common usecases
+  3. restricted - Strictest, follows principle of least privilege
+- this can be set using label pod-security.kubernetes.io/enforce: restricted
+</pre>  
+
+## Lab - Let's apply the PSA security in our project namespace
+```
+oc login -u kubeadmin
+
+oc whoami
+
+oc label namespace jegan \
+  pod-security.kubernetes.io/enforce=restricted \
+  pod-security.kubernetes.io/enforce-version=latest
+ 
+oc project jegan
+cat pod-violating-psa.yml
+oc apply -f pod-violating-psa.yml
+oc get po
+
+cat pod-following-psa-bestpractice.yml
+oc apply -f pod-following-psa-bestpractice.yml
+oc get po
+```
+
+Expected output
+![image](https://github.com/user-attachments/assets/103d22ce-e348-484c-93b4-41df2a8b0a37)
+![image](https://github.com/user-attachments/assets/7098d52d-7406-4ff5-9b12-bff4bccb12fa)
+![image](https://github.com/user-attachments/assets/fa8e0c5d-18dd-4adf-ac0d-9b1f2cad279c)
+![image](https://github.com/user-attachments/assets/13ac977b-64cf-428d-be1e-9e1d7cdfd68f)
+![image](https://github.com/user-attachments/assets/45747bcb-a026-4864-8a1e-7ca226130efe)
+
+Trying changing the pod-security.kubernetes.io/enforce=privileged and later to pod-security.kubernetes.io/enforce=baseline and observe the behaviour.
 
 
 ## Lab - Deploying Ceph strorage into Openshift
