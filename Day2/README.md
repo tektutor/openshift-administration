@@ -97,6 +97,25 @@ OVN Node Agents
 - ovn-controller
 - OVS
 </pre>  
+
+#### OpenShift OVN-Kubernetes Workflow
+- In Master Nodes
+  - Pod created via OpenShift API, triggers CNI (OVN-Kubernetes)
+  - ovnkube-master watches for Kubernetes events:
+    - Pod creation/deletion
+    - Service, Namespace, NetworkPolicy updates
+  - Writes configuration to OVN NB-DB (Logical Switches, Routers, ACLs).
+  - ovn-northd translates NB-DB to SB-DB entries
+
+- In Worker Nodes
+  - ovnkube-node and ovn-controller runs on every worker node
+  - ovn-controller watches SB-DB and configures OVS locally
+  - OVS:
+    - Connects pod to a logical switch via a veth pair
+    - Handles Geneve encapsulation for pod-to-pod traffic across nodes
+    - Applies ACLs for NetworkPolicy enforcement
+
+
 # Info - ovn-kubernetes Network High-Level Architecture
 <pre>
 +--------------------------+
@@ -156,6 +175,8 @@ OVN Node Agents
 +---------+                +---------+  
 </pre>
 
+
+
 ## Lab - Finding OVN-Kubernetes Components that are running with a master node
 Let's get inside the master-1 node
 ```
@@ -171,7 +192,7 @@ crictl pods | grep ovn
 
 Find all the containers running within the ovnkube-node pod
 ```
-crictl ps -p <pod-id> -o json | jq -r '.containers[] | "\(.metadata.name)"'
+crictl ps -p <pod-id> -o json | jq NB-DB-r '.containers[] | "\(.metadata.name)"'
 crictl ps -p <pod-id> -o json | jq -r '.containers[]'
 ```
 ![image](https://github.com/user-attachments/assets/b2fbe440-dfd6-4600-be9e-64dc19ed3c58)
