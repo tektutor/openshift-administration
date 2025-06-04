@@ -1,4 +1,4 @@
-## Day 2
+![image](https://github.com/user-attachments/assets/8daa9f72-0795-4094-98bc-d35222fb8036)## Day 2
 
 ## Lab - Creating a project and deploy nginx web server
 ```
@@ -138,7 +138,7 @@ When a pod is created, the CNI plugin (OVN-Kubernetes) creates a veth pair
 - The other end remains in the host’s root namespace and is connected to the Open vSwitch (OVS) bridge
 </pre>
 
-## Roles and responsibilities - compononent wise
+## Roles and responsibilities - component wise
 ovnkube-cluster-manager
 - allocates a unique subnet to the node hosting the pod
 kube-rbac-proxy
@@ -239,6 +239,185 @@ oc get pod ovnkube-node-lctc4 -n openshift-ovn-kubernetes | jq -r '[.spec.contai
 
 ![image](https://github.com/user-attachments/assets/4bc07de3-097a-4bc5-8d18-a5e35fdbb956)
 ![image](https://github.com/user-attachments/assets/51ef3d8e-1ea6-4cdc-ac6a-a39822b961f3)
+
+## Lab - Create a pod in privileged mode without permissive security context
+```
+cd ~
+git clone https://github.com/tektutor/openshift-administration.git
+cd openshift-administration/Day2/security-context-constraint
+cat pod-with-root-without-using-scc.yml
+oc apply -f pod-with-root-without-using-scc.yml
+```
+
+Expected output
+![image](https://github.com/user-attachments/assets/6d1c6f4b-2af8-49be-a82b-0ff0844e57da)
+![image](https://github.com/user-attachments/assets/3c6f33c6-b4bb-4d84-8102-e0bcbd8a19a5)
+![image](https://github.com/user-attachments/assets/6d0b4c15-761c-4c1d-aa7e-c3526c950943)
+![image](https://github.com/user-attachments/assets/e5ca5ea7-0a4f-442c-a1d5-7a685e7e484d)
+
+Since the developer account doesn't have a service account with sufficient permission to run a Pod in privileged mode, the pod execution is denied by Openshift as expected.
+
+## Lab - Let's create a similar pod with required permissions
+Let's create a custom security context contraint
+```
+cd ~/openshift-administration
+git pull
+cd Day2/security-context-constraint
+oc login -u developer -p developer
+oc whoami
+cat custom-scc.yml
+oc apply -f custom-scc.yml
+
+oc login -u kubeadmin
+oc apply -f custom-scc.yml
+
+oc create sa privileged-sa
+oc apply -f custom-scc.yml
+
+oc login -u developer
+cat pod-with-custom-scc.yml
+oc apply -f pod-with-custom-scc.yml
+oc create deploy nginx --image=bitnami/nginx:latest
+oc get po
+oc get po -w
+oc get pod nginx-85458687c9-8pjlg -o jsonpath='{.spec.serviceAccountName}'
+oc adm policy who-can use scc privileged
+oc adm policy add-scc-to-user privileged -z default -n jegan system:serviceaccount:jegan:default
+cat pod-with-custom-scc.yml
+oc whoami
+oc apply -f pod-with-custom-scc.yml
+oc get po
+```
+Expected output
+![image](https://github.com/user-attachments/assets/dbad1a34-32c9-4f3e-8454-6f893526adbc)
+![image](https://github.com/user-attachments/assets/ae21cc9b-f636-4c05-a646-0f735d79f62f)
+![image](https://github.com/user-attachments/assets/96269c29-d3dd-41c4-ab09-9bf809bde921)
+![image](https://github.com/user-attachments/assets/9d6b95c6-8e48-4077-b122-fe672a5f4998)
+![image](https://github.com/user-attachments/assets/682920ac-5036-4f63-a11c-56c36f875f0c)
+![image](https://github.com/user-attachments/assets/1d7dd177-898e-410f-98d9-75c595c91e58)
+![image](https://github.com/user-attachments/assets/a8578f69-00dd-4cbd-b7ea-2e247c20cb3d)
+![image](https://github.com/user-attachments/assets/821dca56-2763-4810-9870-60cf0349e278)
+
+Ideally, developer account should not given such privileged access, hence let's revoke the permission
+```
+oc login -u kubeadmin
+oc project jegan
+oc delete -f pod-with-custom-scc.yml
+oc whoami
+oc adm policy remove-scc-from-user privileged -z default -n jegan
+oc login -u developer
+oc apply -f pod-with-custom-scc.yml
+```
+Expected output
+![image](https://github.com/user-attachments/assets/4e7096b2-bd0b-498c-b043-e2e07f8a88fa)
+![image](https://github.com/user-attachments/assets/961bfb05-72cf-4045-8192-ecd7b7ec9f6e)
+
+## Info - PodSecurityPolicies(PSP)
+<pre>
+- PodSecurityPolicies work in Kubernetes prior to v1.25 but not in Openshift
+- PodSecurityPolicies were deprecated in Kubernetes v1.21 and removed in v1.25
+- Using Security Context Contraint(SCC) is ideal or alternatively in Openshift we can use Pod Security Admission(PSA)
+</pre>
+
+## Info - Pod Security Admssion(PSA) Overview
+<pre>
+- is built-in admission controller that enforces Kubernetes Pod Security standards on a per namespace basis
+- It supports 3 levels of security
+  1. privileged - No restrictions(most permissive)
+  2. baseline - Basic safety, allows common usecases
+  3. restricted - Strictest, follows principle of least privilege
+- this can be set using label pod-security.kubernetes.io/enforce: restricted
+</pre>  
+
+## Lab - Let's apply the PSA security in our project namespace
+```
+oc login -u kubeadmin
+
+oc whoami
+
+oc label namespace jegan \
+  pod-security.kubernetes.io/enforce=restricted \
+  pod-security.kubernetes.io/enforce-version=latest
+ 
+oc project jegan
+cat pod-violating-psa.yml
+oc apply -f pod-violating-psa.yml
+oc get po
+
+cat pod-following-psa-bestpractice.yml
+oc apply -f pod-following-psa-bestpractice.yml
+oc get po
+```
+
+Expected output
+![image](https://github.com/user-attachments/assets/103d22ce-e348-484c-93b4-41df2a8b0a37)
+![image](https://github.com/user-attachments/assets/7098d52d-7406-4ff5-9b12-bff4bccb12fa)
+![image](https://github.com/user-attachments/assets/fa8e0c5d-18dd-4adf-ac0d-9b1f2cad279c)
+![image](https://github.com/user-attachments/assets/13ac977b-64cf-428d-be1e-9e1d7cdfd68f)
+![image](https://github.com/user-attachments/assets/45747bcb-a026-4864-8a1e-7ca226130efe)
+
+Trying changing the pod-security.kubernetes.io/enforce=privileged and later to pod-security.kubernetes.io/enforce=baseline and observe the behaviour.
+
+## Lab - Using Pod Security Standard using Hashicorp vault
+```
+cd ~/openshift-administration
+git pull
+cd Day2/pod-security-standard-using-hashicorp-vault
+
+oc apply -f namespace.yaml
+oc apply -f serviceaccount.yaml
+oc apply -f configmap.yaml
+oc apply -f pod.yaml
+```
+
+Expected output
+
+Vault Setup, need to export KUBERNETES_HOST to api-server endpoint url
+<pre>
+vault auth enable kubernetes
+
+vault write auth/kubernetes/config \
+  token_reviewer_jwt="$(kubectl get secret $(kubectl get serviceaccount vault-auth -n vault-psa-demo -o jsonpath='{.secrets[0].name}') -n vault-psa-demo -o jsonpath='{.data.token}' | base64 --decode)" \
+  kubernetes_host="https://$KUBERNETES_HOST" \
+  kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+vault policy write app-policy - <<EOF
+path "secret/data/*" {
+  capabilities = ["read"]
+}
+EOF
+
+vault write auth/kubernetes/role/demo-role \
+  bound_service_account_names="vault-auth" \
+  bound_service_account_namespaces="vault-psa-demo" \
+  policies="app-policy" \
+  ttl="24h"
+</pre>
+
+Expected outcome
+<pre>
+- Namespace enforces restricted Pod Security Standard (PSA)
+- Vault Agent pod runs as non-root, no escalation, seccomp enabled
+- Vault Agent authenticates using Openshift service account vault-auth
+- Secrets are written to a shared emptyDir volume /vault/secrets
+- Your app container reads the secret file securely  
+</pre>  
+
+## Info - Apparmor Overview
+<pre>
+- AppArmor is a Linux kernel security module that provides Mandatory Access Control (MAC) for applications 
+- It confines programs to a set of rules that define what files and system resources they can access
+- Unlike traditional Discretionary Access Control (DAC), AppArmor policies are enforced by the kernel regardless of file permissions or user identity
+
+- Red Hat Openshift doesn't support Apparmor officially
+- Why Red Hat Openshift doesn't support it by default
+  - Openshift uses SELINUX with deep integration with Security Context Constraints
+  - Openshift doesn't test or support AppArmor configurations officially
+  - We can't manage AppArmor via OpenShift's built-in SCCs
+  - Openshift is optimized for RPM-based distributions with SELINUX
+  - AppArmor is generally used in Ubuntu/Debian
+- though AppArmor can't be enabled if the underlying platform where Openshift runs supports it, however Red Hat Openshift won't support if something is broken, we are on our own in case things go wrong, hence not recommended
+</pre>
 
 
 ## Lab - Deploying Ceph strorage into Openshift
