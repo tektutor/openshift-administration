@@ -314,7 +314,7 @@ Expected output
 
 ## Info - PodSecurityPolicies(PSP)
 <pre>
-- PodSecurityPolicies work in Kubernetes prior to v1.25 but not in Openshift
+- PodSecurityPolicies works in Kubernetes prior to v1.25 but not in Openshift
 - PodSecurityPolicies were deprecated in Kubernetes v1.21 and removed in v1.25
 - Using Security Context Contraint(SCC) is ideal or alternatively in Openshift we can use Pod Security Admission(PSA)
 </pre>
