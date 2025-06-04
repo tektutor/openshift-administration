@@ -107,10 +107,13 @@ Pod A (10.1.1.1) -----------------routed IP-----------------> Pod B (10.1.2.2)
 #### OpenShift OVN-Kubernetes Workflow
 <pre>
 - When a pod is created, the ovnkube-cluster-manager allocates a unique subnet to the node hosting the pod
-- The node's ovn-controller programs the local OVS to set up the necessary networking, including logical switches and routers
-- Network policies are enforced locally by the ovn-controller, which programs the OVS with appropriate OpenFlow rules
+- The node's ovn-controller programs the local OVS to set up the necessary networking, 
+  including logical switches and routers
+- Network policies are enforced locally by the ovn-controller, which programs the OVS with 
+  appropriate OpenFlow rules
 - Services are exposed through local routers, and DNS entries are updated to reflect the new services.
-- For communication between pods on different nodes, the local OVS instances handle traffic routing, leveraging the distributed OVN architecture
+- For communication between pods on different nodes, the local OVS instances handle traffic routing, 
+  leveraging the distributed OVN architecture
 </pre>
 
 ## Lab - Finding OVN-Kubernetes Components that are running with a master node
