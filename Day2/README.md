@@ -240,6 +240,36 @@ oc get pod ovnkube-node-lctc4 -n openshift-ovn-kubernetes | jq -r '[.spec.contai
 ![image](https://github.com/user-attachments/assets/4bc07de3-097a-4bc5-8d18-a5e35fdbb956)
 ![image](https://github.com/user-attachments/assets/51ef3d8e-1ea6-4cdc-ac6a-a39822b961f3)
 
+## Lab - Create a pod in privileged mode without permissive security context
+```
+cd ~
+git clone https://github.com/tektutor/openshift-administration.git
+cd openshift-administration/Day2/security-context-constraint
+cat pod-with-root-without-using-scc.yml
+oc apply -f pod-with-root-without-using-scc.yml
+```
+
+Expected output
+![image](https://github.com/user-attachments/assets/6d1c6f4b-2af8-49be-a82b-0ff0844e57da)
+![image](https://github.com/user-attachments/assets/3c6f33c6-b4bb-4d84-8102-e0bcbd8a19a5)
+![image](https://github.com/user-attachments/assets/6d0b4c15-761c-4c1d-aa7e-c3526c950943)
+![image](https://github.com/user-attachments/assets/e5ca5ea7-0a4f-442c-a1d5-7a685e7e484d)
+
+Since the developer account doesn't have a service account with sufficient permission to run a Pod in privileged mode, the pod execution is denied by Openshift as expected.
+
+## Lab - Let's create a similar pod with required permissions
+Let's create a custom security context contraint
+```
+cd ~/openshift-administration
+git pull
+cd Day2/security-context-constraint
+oc whoami
+cat custom-scc.yml
+oc apply -f custom-scc.yml
+```
+Expected output
+![image](https://github.com/user-attachments/assets/dbad1a34-32c9-4f3e-8454-6f893526adbc)
+
 
 ## Lab - Deploying Ceph strorage into Openshift
 <pre>
