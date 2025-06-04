@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: steps-sharing-data
+spec:
+  results:
+  - name: data
+    description: Data to be shared
+  steps:
+  - name: step1
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command:
+    - /bin/bash
+    args:
+    - "-c"
+    - echo -n "Plain data converted  to Base 64"|base64 > $(results.data.path)
+
+  - name: step2
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command:
+    - /bin/bash
+    args:
+    - "-c"
+    - cat $(results.data.path)

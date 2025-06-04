@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: task-1
+spec:
+  steps:
+  - name: step-1
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command:
+    - bin/sh
+    args:
+    - -c
+    - echo "Task 1 - Step 1"
+
+  - name: step-2
+    image: alpine 
+    imagePullPolicy: IfNotPresent
+    command:
+    - bin/sh
+    args:
+    - -c
+    - echo "Task 1 - Step 2"
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: task-2
+spec:
+  steps:
+  - name: step-1
+    image: ubuntu:latest
+    imagePullPolicy: IfNotPresent
+    command:
+    - bin/sh
+    args:
+    - -c
+    - echo "Task 2 - Step 1"
+
+  - name: step-2
+    image: ubuntu
+    imagePullPolicy: IfNotPresent
+    command:
+    - bin/sh
+    args:
+    - -c
+    - echo "Task 2 - Step 2"
+
+  - name: step-3
+    image: alpine:latest 
+    imagePullPolicy: IfNotPresent
+    command:
+    - bin/sh
+    args:
+    - -c
+    - echo "Task 2 - Step 3"
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: first-pipeline
+spec:
+  tasks:
+  - name: task1
+    taskRef:
+      name: task-1
+
+  - name: task2
+    runAfter:
+    - task1
+    taskRef:
+      name: task-2

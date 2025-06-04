@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: third-pipeline
+spec:
+  tasks:
+  - name: first-task
+    taskRef:
+      kind: Task
+      name: task-1
+
+  - name: second-task
+    taskRef:
+      kind: Task
+      name: task-2
+    runAfter: 
+    - first-task
+
+  - name: third-task 
+    taskSpec:
+      steps:
+      - name: step-1
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        script: |
+          echo "Pipeline 2 - Task 3, Step 1"
+    runAfter:
+    - first-task
+
+  - name: fourth-task 
+    taskSpec:
+      steps:
+      - name: step-1
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        script: |
+          echo "Pipeline 2 - Task 4, Step 1"
+    runAfter:
+    - second-task
+    - third-task
+
+  - name: final-task 
+    taskSpec:
+      steps:
+      - name: step-1
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        script: |
+          echo "Pipeline 2 - Final Task, Step 1"
+    runAfter:
+    - fourth-task
+
+---
+
+---

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config-map
+data:
+  jdk_home: /usr/lib/jdk8
+  m2_home: /usr/share/maven
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: task-with-configmap
+spec:
+  steps:
+  - image: ubuntu
+    imagePullPolicy: IfNotPresent
+    script: |
+      #!/usr/bin/env bash
+      ls -ltra /var/configmap
+      printf '\n'
+      cat /var/configmap/m2_home
+      printf '\n'
+      cat /var/configmap/jdk_home
+    volumeMounts:
+    - name: tools-path
+      mountPath: /var/configmap
+  volumes:
+  - name: tools-path
+    configMap:
+      name: my-config-map
