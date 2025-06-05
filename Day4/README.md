@@ -111,7 +111,7 @@ spec:
       bindDN: "cn=admin,dc=example,dc=com"
       bindPassword:
         name: ldap-secret
-      insecure: false
+      insecure: true
       attributes:
         id:
         - uid
