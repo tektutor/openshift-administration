@@ -54,6 +54,13 @@ oc get pods -n openshift-operator-lifecycle-manager
 
 oc get csv -n open-cluster-management
 oc describe multiclusterhub multiclusterhub -n open-cluster-management
+oc scale deployment multiclusterhub-operator -n open-cluster-management --replicas=0
+oc get multiclusterhub multiclusterhub -n open-cluster-management -o json > mch.json
+oc delete application --all -n open-cluster-management
+oc delete placementrule --all -n open-cluster-management
+oc delete policy --all -A
+oc delete managedcluster --all
+oc delete multiclusterhub multiclusterhub -n open-cluster-management
 
 
 oc config get-contexts
