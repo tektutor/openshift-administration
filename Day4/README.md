@@ -62,6 +62,19 @@ oc delete policy --all -A
 oc delete managedcluster --all
 oc delete multiclusterhub multiclusterhub -n open-cluster-management
 
+oc get validatingwebhookconfigurations | grep multiclusterhub
+oc delete validatingwebhookconfiguration multiclusterhub-operator-validating-webhook
+oc patch validatingwebhookconfiguration multiclusterhub-operator-validating-webhook \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/webhooks/0/failurePolicy", "value":"Ignore"}]'
+oc get multiclusterhub multiclusterhub -n open-cluster-management -o json > mch.json
+# Edit: remove finalizers and save
+oc replace -f mch.json
+oc delete multiclusterhub multiclusterhub -n open-cluster-management --force --grace-period=0
+oc delete namespace open-cluster-management --force --grace-period=0
+oc delete ns open-cluster-management-hub --force --grace-period=0
+oc get crds | grep open-cluster-management | awk '{print $1}' | xargs oc delete crd
+
 
 oc config get-contexts
 oc config use-context managed-cluster-1
