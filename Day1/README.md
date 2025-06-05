@@ -1,10 +1,5 @@
 ## Day 1
 
-## Please provide your first day feedback 
-<pre>
-https://survey.zohopublic.com/zs/PhCIdu	
-</pre>	
-
 ## Red Hat Openshift System Requirements
 Our Training Lab Hardware configurations ( For a multi-node Openshift cluster setup - with 3 masters and 3 worker nodes )
 <pre>
@@ -14,22 +9,22 @@ Intel Xeon Processor with 48 Cores
 </pre>	
 
 #### Master Nodes (Control Plane)
-<pre>Not all MCO features work on RHEL. For example:
-
-Kernel upgrades and Ignition are RHCOS-only.
-
-Some machine configs might not apply unless explicitly tailored for RHEL.
-
-
+<pre>
+- Not all MCO features work on RHEL. For example:
+- Kernel upgrades and Ignition are RHCOS-only.
+- Some machine configs might not apply unless explicitly tailored for RHEL.
 - This can be physical server or a Virtual machine
 - this can be server from your private datacenter or an AWS ec2 instance or an azure VMS
 - a minimum of 3 master nodes are required for HA
 </pre>	
-<pre>
+
+All the master and worker nodes we have allocated below hardwares
+<pre>	
 Processor - 8 vcpus
 RAM - 128 GB RAM
 HDD - 500 GB 
 </pre>
+
 Sizing considerations
 <pre>
 - For each 1000 pods about 1.5 GB RAM and 1 CPU core is required as a minimum
@@ -202,7 +197,7 @@ sudo chmod a+x /usr/local/bin/set-dns-serial.sh
 ansible-playbook tasks/configure_bind_dns.yml
 systemctl start named
 systemctl status named
-dig @127.0.0.1 -t srv _etcd-server-ssl._tcp.ocp4.alchemy.com
+dig @127.0.0.1 -t srv _etcd-server-ssl._tcp.ocp4.tektutor.org
 ```
 
 ## On Fedora 39 VM
@@ -211,7 +206,7 @@ nmcli connection show
 nmcli connection modify enp1s0  ipv4.dns "192.168.100.254"
 nmcli connection reload
 nmcli connection up enp1s0
-host bootstrap.ocp4.alchemy.com
+host bootstrap.ocp4.tektutor.org
 sudo firewall-cmd --add-service={dhcp,tftp,http,dns} --permanent
 sudo firewall-cmd --reload
 ```
@@ -321,7 +316,7 @@ cd ~/
 
 cat <<EOF > install-config-base.yaml
 apiVersion: v1
-baseDomain: alchemy.com
+baseDomain: tektutor.org
 compute:
 - hyperthreading: Enabled
   name: worker
@@ -351,7 +346,7 @@ Then
 ```
 vim  install-config-base.yaml
 apiVersion: v1
-baseDomain: alchemy.com
+baseDomain: tektutor.org
 compute:
 - hyperthreading: Enabled
   name: worker
@@ -403,7 +398,7 @@ systemctl status haproxy
 
 ## Create the bootstrap VM
 ```
-sudo virt-install -n bootstrap.ocp4.alchemy.com \
+sudo virt-install -n bootstrap.ocp4.tektutor.org \
   --description "Bootstrap Machine for Openshift 4 Cluster" \
   --ram=8192 \
   --vcpus=4 \
@@ -420,14 +415,14 @@ journalctl -f
 journalctl -f -u tftp
 journalctl -f -u dhcpd
 
-sudo virsh --connect qemu:///system start bootstrap.ocp4.alchemy.com
+sudo virsh --connect qemu:///system start bootstrap.ocp4.tektutor.org
 
 ```
 
 ## Create Master nodes
 ```
 # Create Master01 VM
-sudo virt-install -n master01.ocp4.alchemy.com \
+sudo virt-install -n master01.ocp4.tektutor.org \
   --description "Master01 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -441,7 +436,7 @@ sudo virt-install -n master01.ocp4.alchemy.com \
   --network bridge=openshift4,mac=52:54:00:8b:a1:17
 
 # Create Master02 VM
-sudo virt-install -n master02.ocp4.alchemy.com \
+sudo virt-install -n master02.ocp4.tektutor.org \
   --description "Master02 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -455,7 +450,7 @@ sudo virt-install -n master02.ocp4.alchemy.com \
   --network bridge=openshift4,mac=52:54:00:ea:8b:9d
 
 # Create Master03 VM
-sudo virt-install -n master03.ocp4.alchemy.com \
+sudo virt-install -n master03.ocp4.tektutor.org \
   --description "Master03 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -468,16 +463,15 @@ sudo virt-install -n master03.ocp4.alchemy.com \
   --pxe \
   --network bridge=openshift4,mac=52:54:00:f8:87:c7
 
-sudo virsh --connect qemu:///system start master01.ocp4.alchemy.com
-sudo virsh --connect qemu:///system start master02.ocp4.alchemy.com
-sudo virsh --connect qemu:///system start master03.ocp4.alchemy.com
+sudo virsh --connect qemu:///system start master01.ocp4.tektutor.org
+sudo virsh --connect qemu:///system start master02.ocp4.tektutor.org
+sudo virsh --connect qemu:///system start master03.ocp4.tektutor.org
 ```
-
 
 ## Create Worker Nodes ( Must be created once the master nodes are listed by oc get nodes )
 ```
 # Create Worker01 VM
-sudo virt-install -n worker01.ocp4.alchemy.com \
+sudo virt-install -n worker01.ocp4.tektutor.org \
   --description "Worker01 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -491,7 +485,7 @@ sudo virt-install -n worker01.ocp4.alchemy.com \
   --network bridge=openshift4,mac=52:54:00:31:4a:39
  
 # Create Worker02 VM
-sudo virt-install -n worker02.ocp4.alchemy.com \
+sudo virt-install -n worker02.ocp4.tektutor.org \
   --description "Worker02 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -505,7 +499,7 @@ sudo virt-install -n worker02.ocp4.alchemy.com \
   --network bridge=openshift4,mac=52:54:00:6a:37:32
 
 # Create Worker03 VM
-sudo virt-install -n worker03.ocp4.alchemy.com \
+sudo virt-install -n worker03.ocp4.tektutor.org \
   --description "Worker03 Machine for Openshift 4 Cluster" \
   --ram=131072 \
   --vcpus=8 \
@@ -518,16 +512,16 @@ sudo virt-install -n worker03.ocp4.alchemy.com \
   --pxe \
   --network bridge=openshift4,mac=52:54:00:95:d4:ed
 
-sudo virsh --connect qemu:///system start worker01.ocp4.alchemy.com
-sudo virsh --connect qemu:///system start worker02.ocp4.alchemy.com
-sudo virsh --connect qemu:///system start worker03.ocp4.alchemy.com
+sudo virsh --connect qemu:///system start worker01.ocp4.tektutor.org
+sudo virsh --connect qemu:///system start worker02.ocp4.tektutor.org
+sudo virsh --connect qemu:///system start worker03.ocp4.tektutor.org
 
 for i in {1..3}; do
-	sudo virsh autostart master0${i}.ocp4.alchemy.com
+	sudo virsh autostart master0${i}.ocp4.tektutor.org
 done
 
 for i in {1..2}; do
-	sudo virsh autostart worker0${i}.ocp4.alchemy.com
+	sudo virsh autostart worker0${i}.ocp4.tektutor.org
 done
 
 virsh list --autostart
@@ -562,7 +556,8 @@ To access web console
 
 We need to add the below entries in /etc/hosts file
 <pre>
-192.168.100.254 api.ocp4.alchemy.com oauth-openshift.apps.ocp4.alchemy.com console-openshift-console.apps.ocp4.alchemy.com</pre>
+192.168.100.254 api.ocp4.tektutor.org oauth-openshift.apps.ocp4.tektutor.org console-openshift-console.apps.ocp4.tektutor.org
+</pre>
 
 ```
 oc whoami --show-console
