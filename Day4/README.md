@@ -86,4 +86,47 @@ oc get route multicloud-console -n open-cluster-management -o jsonpath='{.spec.h
 oc get route console -n openshift-console -o jsonpath='{.spec.host}'
 ```
 
+## Lab - LDAP Integration with Openshift
+
+Create a secret for LDAP Bind Credential
+```
+oc create secret generic ldap-secret \
+  --from-literal=bindPassword='YOUR_LDAP_PASSWORD' \
+  -n openshift-config
+```
+
+Create a LDAP Identity Provider Configuration
+<pre>
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: my_ldap_provider
+    mappingMethod: claim
+    type: LDAP
+    ldap:
+      url: ldaps://ost.com:636/ou=users,dc=ost,dc=com?uid
+      bindDN: "cn=admin,dc=example,dc=com"
+      bindPassword:
+        name: ldap-secret
+      insecure: false
+      attributes:
+        id:
+        - uid
+        name:
+        - cn
+        email:
+        - mail
+        preferredUsername:
+        - uid
+</pre>
+
+Apply 
+```
+oc apply -f ldap-oauth.yaml
+oc login --username=user01@ost.com --password=rps@123 --server=https://api.ocp4.rps.com:6443
+```
+
 
