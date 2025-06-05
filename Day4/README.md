@@ -126,7 +126,8 @@ spec:
 Apply 
 ```
 oc apply -f ldap-oauth.yaml
-oc login --username=user01@ost.com --password=rps@123 --server=https://api.ocp4.rps.com:6443
+oc login --username=user01@ost.com --password=rps@123 --server=https://api.ocp4.rps.com:6443  --insecure-skip-tls-verify
+
 ```
 
 
