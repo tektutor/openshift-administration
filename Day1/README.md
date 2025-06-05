@@ -176,7 +176,7 @@ Install DNS serial number generator
 sudo vim /usr/local/bin/set-dns-serial.sh
 ```
 #!/bin/bash
-dnsserialfile=/usr/local/src/dnsserial-DO_NOT_DELETE_BEFORE_ASKING_CHRISTIAN.txt
+dnsserialfile=/usr/local/src/dnsserial.txt
 zonefile=/var/named/zonefile.db
 if [ -f zonefile ] ; then
 	echo $[ $(grep serial ${zonefile}  | tr -d "\t"" ""\n"  | cut -d';' -f 1) + 1 ] | tee ${dnsserialfile}
