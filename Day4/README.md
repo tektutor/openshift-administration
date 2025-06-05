@@ -39,6 +39,9 @@ kubectl apply -f https://github.com/open-cluster-management-io/registration-oper
 oc apply -f import.yaml
 ```
 
-
+We can get the multi-cluster hub route
+```
+oc get route console -n openshift-console -o jsonpath='{.spec.host}'
+```
 
 
