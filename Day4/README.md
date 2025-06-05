@@ -52,6 +52,9 @@ oc get subscription multiclusterhub-operator -n open-cluster-management
 oc describe subscription multiclusterhub-operator -n open-cluster-management
 oc get pods -n openshift-operator-lifecycle-manager
 
+oc get csv -n open-cluster-management
+
+
 oc config get-contexts
 oc config use-context managed-cluster-1
 oc whoami
