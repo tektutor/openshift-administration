@@ -26,8 +26,16 @@ oc get secret -n rps-ocp4-multicluster
 oc get secret rps-ocp4-multicluster-import -n rps-ocp4-multicluster -o jsonpath='{.data.import\.yaml}' | base64 -d > import.yaml
 ```
 
-On every managed Openshift cluster environment, we need to run this
+
+
+We need to register all the managed cluster to the Multi-cluster Hub
 ```
+# Install CRDs
+kubectl apply -f https://github.com/open-cluster-management-io/registration-operator/releases/latest/download/klusterlet.crd.yaml
+
+# Install registration operator
+kubectl apply -f https://github.com/open-cluster-management-io/registration-operator/releases/latest/download/registration-operator.yaml
+
 oc apply -f import.yaml
 ```
 
