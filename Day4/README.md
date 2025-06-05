@@ -41,6 +41,9 @@ oc apply -f import.yaml
 
 We can get the multi-cluster hub route
 ```
+oc get subscription multiclusterhub-operator -n open-cluster-management -o yaml
+
+
 oc get installplan -n open-cluster-management
 oc describe installplan <installplan-name> -n open-cluster-management
 oc patch installplan <installplan-name> -n open-cluster-management --type merge -p '{"spec":{"approved":true}}'
