@@ -41,6 +41,14 @@ oc apply -f import.yaml
 
 We can get the multi-cluster hub route
 ```
+oc get installplan -n open-cluster-management
+oc describe installplan <installplan-name> -n open-cluster-management
+oc patch installplan <installplan-name> -n open-cluster-management --type merge -p '{"spec":{"approved":true}}'
+oc get pods -n open-cluster-management
+oc get subscription multiclusterhub-operator -n open-cluster-management
+oc describe subscription multiclusterhub-operator -n open-cluster-management
+oc get pods -n openshift-operator-lifecycle-manager
+
 oc config get-contexts
 oc config use-context managed-cluster-1
 oc whoami
