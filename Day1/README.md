@@ -400,7 +400,7 @@ systemctl status haproxy
 ```
 sudo virt-install -n bootstrap.ocp4.tektutor.org \
   --description "Bootstrap Machine for Openshift 4 Cluster" \
-  --ram=8192 \
+  --ram=4096 \
   --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
@@ -416,7 +416,6 @@ journalctl -f -u tftp
 journalctl -f -u dhcpd
 
 sudo virsh --connect qemu:///system start bootstrap.ocp4.tektutor.org
-
 ```
 
 ## Create Master nodes
@@ -424,11 +423,11 @@ sudo virsh --connect qemu:///system start bootstrap.ocp4.tektutor.org
 # Create Master01 VM
 sudo virt-install -n master01.ocp4.tektutor.org \
   --description "Master01 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
-  --disk pool=default,bus=virtio,size=500 \
+  --disk pool=default,bus=virtio,size=8 \
   --graphics none \
   --serial pty \
   --console pty \
@@ -438,11 +437,11 @@ sudo virt-install -n master01.ocp4.tektutor.org \
 # Create Master02 VM
 sudo virt-install -n master02.ocp4.tektutor.org \
   --description "Master02 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
-  --disk pool=default,bus=virtio,size=500 \
+  --disk pool=default,bus=virtio,size=8 \
   --graphics none \
   --serial pty \
   --console pty \
@@ -452,11 +451,11 @@ sudo virt-install -n master02.ocp4.tektutor.org \
 # Create Master03 VM
 sudo virt-install -n master03.ocp4.tektutor.org \
   --description "Master03 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
-  --disk pool=default,bus=virtio,size=500 \
+  --disk pool=default,bus=virtio,size=8 \
   --graphics none \
   --serial pty \
   --console pty \
@@ -473,11 +472,11 @@ sudo virsh --connect qemu:///system start master03.ocp4.tektutor.org
 # Create Worker01 VM
 sudo virt-install -n worker01.ocp4.tektutor.org \
   --description "Worker01 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
-  --disk pool=default,bus=virtio,size=500 \
+  --disk pool=default,bus=virtio,size=8 \
   --graphics none \
   --serial pty \
   --console pty \
@@ -487,11 +486,11 @@ sudo virt-install -n worker01.ocp4.tektutor.org \
 # Create Worker02 VM
 sudo virt-install -n worker02.ocp4.tektutor.org \
   --description "Worker02 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
-  --disk pool=default,bus=virtio,size=500 \
+  --disk pool=default,bus=virtio,size=8 \
   --graphics none \
   --serial pty \
   --console pty \
@@ -501,8 +500,8 @@ sudo virt-install -n worker02.ocp4.tektutor.org \
 # Create Worker03 VM
 sudo virt-install -n worker03.ocp4.tektutor.org \
   --description "Worker03 Machine for Openshift 4 Cluster" \
-  --ram=131072 \
-  --vcpus=8 \
+  --ram=4096 \
+  --vcpus=4 \
   --os-variant=rhel8.0 \
   --noreboot \
   --disk pool=default,bus=virtio,size=500 \
