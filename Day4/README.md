@@ -180,5 +180,5 @@ ETCDCTL_API=3 etcdctl snapshot save /home/core/etcd-backup.db \
 
 Let's copy the certf from master to helper vm
 ```
-scp -r core@master01.ocp4.rps.com:/etc/kubernetes/static-pod-resources/etcd-certs.secrets.etcd-all-certs .
+scp -r core@master01.ocp4.rps.com:/etc/kubernetes/static-pod-resources/etcd-certs/secrets/etcd-all-certs .
 ```
