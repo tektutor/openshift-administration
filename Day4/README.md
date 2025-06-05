@@ -60,6 +60,8 @@ oc config use-context managed-cluster-1
 oc whoami
 oc get nodes
 
+oc get route multicloud-console -n open-cluster-management -o jsonpath='{.spec.host}'
+
 oc get route console -n openshift-console -o jsonpath='{.spec.host}'
 ```
 
