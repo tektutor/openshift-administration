@@ -41,6 +41,11 @@ oc apply -f import.yaml
 
 We can get the multi-cluster hub route
 ```
+oc config get-contexts
+oc config use-context managed-cluster-1
+oc whoami
+oc get nodes
+
 oc get route console -n openshift-console -o jsonpath='{.spec.host}'
 ```
 
