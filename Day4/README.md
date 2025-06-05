@@ -131,3 +131,38 @@ oc login --username=user01@ost.com --password=rps@123 --server=https://api.ocp4.
 ```
 
 
+## Lab - Ceph
+Create loopback disk
+<pre>
+#!/bin/bash
+set -e
+
+DISK_SIZE_GB=10
+DISK_FILE="/var/tmp/ceph-loopback-disk.img"
+
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [ ! -f "$DISK_FILE" ]; then
+  echo "Creating $DISK_FILE (${DISK_SIZE_GB}G)..."
+  fallocate -l ${DISK_SIZE_GB}G "$DISK_FILE"
+else
+  echo "$DISK_FILE already exists"
+fi
+
+LOOP_DEVICE=$(losetup -f --show "$DISK_FILE")
+echo "Loop device created: $LOOP_DEVICE"
+
+lsblk "$LOOP_DEVICE"
+
+echo "Use $LOOP_DEVICE in LocalVolume config"  
+</pre>
+
+Run it
+```
+sudo bash create-loopback-disk.sh
+oc label node <node-name> cluster.ocs.openshift.io/openshift-storage=''
+
+```
