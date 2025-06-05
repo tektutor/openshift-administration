@@ -177,3 +177,10 @@ ETCDCTL_API=3 etcdctl snapshot save /home/core/etcd-backup.db \
   --key=/etc/kubernetes/static-pod-resources/etcd-certs/system:etcd-peer.key
 
 ```
+
+Let's copy the certf from master to helper vm
+```
+scp core@master01.ocp4.rps.com:/etc/kubernetes/static-pod-resources/etcd-certs/root-ca.crt .
+scp core@master01.ocp4.rps.com:/etc/kubernetes/static-pod-resources/etcd-certs/system:etcd-client.crt etcd-client.crt
+scp core@master01.ocp4.rps.com:/etc/kubernetes/static-pod-resources/etcd-certs/system:etcd-client.key etcd-client.key
+```
