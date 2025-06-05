@@ -166,3 +166,14 @@ sudo bash create-loopback-disk.sh
 oc label node <node-name> cluster.ocs.openshift.io/openshift-storage=''
 
 ```
+
+
+## Lab - Taking backup of etcd database to recover in case of crash
+```
+ETCDCTL_API=3 etcdctl snapshot save /home/core/etcd-backup.db \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/static-pod-resources/etcd-certs/root-ca.crt \
+  --cert=/etc/kubernetes/static-pod-resources/etcd-certs/system:etcd-peer.crt \
+  --key=/etc/kubernetes/static-pod-resources/etcd-certs/system:etcd-peer.key
+
+```
